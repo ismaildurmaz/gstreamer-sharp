@@ -13,7 +13,7 @@ namespace Gst.Tests
         [Test]
         public void GetVersion()
         {
-            Debug.WriteLine(Gst.VersionDescription);    
+            Debug.WriteLine(Gst.Version);    
         }
     }
 }

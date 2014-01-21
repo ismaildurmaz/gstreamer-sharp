@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Gst
 {
+    [Flags]
     public enum GstPlayFlags
     {
         Video = (1 << 0),

@@ -23,15 +23,14 @@ namespace Gst
         #endregion
 
         private static Hashtable _objTable = new Hashtable();
-        private static Version _version = null;
-        private static string _versionDescription = null;
+        private static GstVersion _version = null;
 
         static Gst()
         {
            
         }
 
-        internal static string GetName(string type)
+        internal static string GenerateName(string type)
         {
             object value = _objTable[type];
             if (value == null)
@@ -47,12 +46,12 @@ namespace Gst
             return type + "_" + value;
         }
 
-        internal static string GetName(Type type)
+        internal static string GenerateName(Type type)
         {
-            return GetName(type.Name);
+            return GenerateName(type.Name);
         }
 
-        public static Version Version
+        public static GstVersion Version
         {
             get
             {
@@ -60,21 +59,10 @@ namespace Gst
                 {
                     uint major, minor, micro, nano;
                     gst_version(out major, out minor, out micro, out nano);
-                    _version = new Version((int)major, (int)minor, (int)micro, (int)nano);
+                    var desc = Utils.StringFromNativeUtf8(gst_version_string());
+                    _version = new GstVersion(major,minor, micro, nano, desc);
                 }
                 return _version;
-            }
-        }
-
-        public static string VersionDescription
-        {
-            get
-            {
-                if (_versionDescription == null)
-                {
-                    _versionDescription = Utils.StringFromNativeUtf8(gst_version_string());
-                }
-                return _versionDescription;
             }
         }
 

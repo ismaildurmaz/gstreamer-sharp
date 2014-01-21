@@ -10,7 +10,7 @@ namespace Gst
     {
         #region wrappers
         [DllImport(Library.Libgstreamer)]
-        public static extern IntPtr gst_bus_timed_pop_filtered(IntPtr bus, uint timeout, GstMessageType messageType);
+        private static extern IntPtr gst_bus_timed_pop_filtered(IntPtr bus, uint timeout, GstMessageType messageType);
         #endregion
 
         internal GstBus(IntPtr handle) : base(handle)

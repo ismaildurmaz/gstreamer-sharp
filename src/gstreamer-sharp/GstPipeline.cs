@@ -18,7 +18,7 @@ namespace Gst
 
         public static GstPipeline Create()
         {
-            return Create(Gst.GetName(typeof (GstPipeline)));
+            return Create(Gst.GenerateName(typeof (GstPipeline)));
         }
 
         public static GstPipeline Create(string name)

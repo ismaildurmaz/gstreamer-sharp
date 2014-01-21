@@ -24,7 +24,7 @@ namespace Gst
 
         public static GstElement FactoryMake(string factoryName)
         {
-            return FactoryMake(factoryName, Gst.GetName(factoryName));
+            return FactoryMake(factoryName, Gst.GenerateName(factoryName));
         }
 
         public static GstElement FactoryMake(GstBaseFactory baseFactory)

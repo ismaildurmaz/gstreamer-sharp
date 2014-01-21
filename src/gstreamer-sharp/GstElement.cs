@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -30,15 +31,38 @@ namespace Gst
         }
 
         
-
-        public bool Link(GstElement element)
+        /// <summary>
+        /// Link element with destinationElement
+        /// </summary>
+        /// <param name="destinationElement"></param>
+        /// <returns></returns>
+        public bool Link(GstElement destinationElement)
         {
-            return gst_element_link(Handle, element.Handle);
+            return gst_element_link(Handle, destinationElement.Handle);
         }
 
-        public GstStateChangeReturn Play()
+        /// <summary>
+        /// Set state to playing
+        /// </summary>
+        public void Play()
         {
-            return gst_element_set_state(Handle, GstState.Playing);
+            var result = gst_element_set_state(Handle, GstState.Playing);
+            if (result == GstStateChangeReturn.Failure)
+            {
+                throw new Exception("Cannot change state to playing");
+            }
+        }
+
+        /// <summary>
+        /// Set state to paused
+        /// </summary>
+        public void Pause()
+        {
+            var result = gst_element_set_state(Handle, GstState.Paused);
+            if (result == GstStateChangeReturn.Failure)
+            {
+                throw new Exception("Cannot change state to paused");
+            }
         }
 
         public GstBus GetBus()
