@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Gst
 {
-    public class GObject
+    public class GObject : HandleObject
     {
         #region wrappers
 
@@ -16,17 +19,18 @@ namespace Gst
         [DllImport(Library.Libgobject, CallingConvention = CallingConvention.Cdecl)]
         private static extern void g_object_get(IntPtr obj, string propertName, out IntPtr value1, object value2);
 
+        [DllImport(Library.Libgobject)]
+        private static extern IntPtr g_object_class_list_properties(IntPtr obj, out uint count);
         #endregion
 
-        private IntPtr _handle;
-
-        internal GObject(IntPtr handle)
+        internal GObject(IntPtr handle) : base(handle)
         {
-            this._handle = handle;
-            if (handle == IntPtr.Zero)
-            {
-                throw new Exception("Handle cannot be initialized");
-            }
+            
+        }
+
+        internal GObject(GObject obj) : base(obj.Handle)
+        {
+
         }
 
         public void Set(string propertyName, IntPtr value)
@@ -34,7 +38,7 @@ namespace Gst
             g_object_set(Handle, propertyName, value, null);
         }
 
-        public void Set(string propertyName, int value)
+        public void Set(string propertyName, Int32 value)
         {
             Set(propertyName, new IntPtr(value));
         }
@@ -49,15 +53,24 @@ namespace Gst
             Set(propertyName, Convert.ToInt32(value));
         }
 
-        public void Set(string propertyName, uint value)
+        public void Set(string propertyName, UInt32 value)
         {
             Set(propertyName, new IntPtr(value));
         }
 
+        public void Set(string propertyName, UInt64 value)
+        {
+            Set(propertyName, Convert.ToInt64(value));
+        }
 
-        public void Set(string propertyName, long value)
+        public void Set(string propertyName, Int64 value)
         {
             Set(propertyName, new IntPtr(value));
+        }
+
+        public void Set(string propertyName, Color value)
+        {
+            Set(propertyName, value.ToArgb());
         }
 
         public void Set(string propertyName, double value)
@@ -65,21 +78,66 @@ namespace Gst
             Set(propertyName, BitConverter.DoubleToInt64Bits(value));
         }
 
+        public void Set(string propertyName, TimeSpan value)
+        {
+            Set(propertyName, Convert.ToInt64(Utils.ConvertMillisecondsToNanoseconds(value.TotalMilliseconds)));
+        }
+
+
+        public void Set(string propertyName, object value)
+        {
+            var o = value as HandleObject;
+            if (o != null)
+            {
+                Set(propertyName, o.Handle);
+            }
+            else
+            {
+                IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(value));
+                Marshal.StructureToPtr(value, ptr, true);
+                Set(propertyName, ptr);
+            }
+        }
+
         public void Set(string propertyName, string value)
         {
             Set(propertyName, Utils.NativeUtf8FromString(value));
         }
 
-        public void Get(string propertyName, out IntPtr value)
+        public IntPtr Get(string propertyName)
         {
-            g_object_get(Handle, propertyName, out value, null);
+            var ptr = new IntPtr();
+            g_object_get(Handle, propertyName, out ptr, null);
+            return ptr;
+        }
+
+        public object GetStructure(string propertyName, Type type)
+        {
+            var ptr = Get(propertyName);
+            if (ptr == IntPtr.Zero)
+            {
+                return null;
+            }
+            if (typeof (HandleObject).IsAssignableFrom(type))
+            {
+                BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+
+                return Activator.CreateInstance(type, flags, null, new object[] { ptr }, null);
+            }
+            else
+            {
+                return Marshal.PtrToStructure(ptr, type);
+            }
+        }
+
+        public T GetStructure<T>(string propertyName)
+        {
+            return (T) GetStructure(propertyName, typeof (T));
         }
 
         public string GetString(string propertyName)
         {
-            IntPtr ptr;
-            Get(propertyName, out ptr);
-            return Utils.StringFromNativeUtf8(ptr);
+            return Utils.StringFromNativeUtf8(Get(propertyName));
         }
 
         public Uri GetUri(string propertyName)
@@ -87,11 +145,29 @@ namespace Gst
             return new Uri(GetString(propertyName));
         }
 
-        public int GetInt32(string propertyName)
+        public Int32 GetInt32(string propertyName)
         {
-            IntPtr ptr;
-            Get(propertyName, out ptr);
-            return ptr.ToInt32();
+            return Get(propertyName).ToInt32();
+        }
+
+        public Color GetColor(string propertyName)
+        {
+            return Color.FromArgb(Get(propertyName).ToInt32());
+        }
+
+        public TimeSpan GetTimeSpan(string propertyName)
+        {
+            return TimeSpan.FromMilliseconds(Utils.ConvertNanosecondsToMilliseconds(GetInt64(propertyName)));
+        }
+
+        public Int64 GetInt64(string propertyName)
+        {
+            return Get(propertyName).ToInt64();
+        }
+
+        public UInt64 GetUInt64(string propertyName)
+        {
+            return Convert.ToUInt64(Get(propertyName).ToInt64());
         }
 
         public bool GetBool(string propertyName)
@@ -101,21 +177,25 @@ namespace Gst
 
         public uint GetUInt32(string propertyName)
         {
-            IntPtr ptr;
-            Get(propertyName, out ptr);
-            return Convert.ToUInt32(ptr.ToInt64());
+            return Convert.ToUInt32(Get(propertyName).ToInt64());
         }
 
         public double GetDouble(string propertyName)
         {
-            IntPtr ptr;
-            Get(propertyName, out ptr);
-            return BitConverter.Int64BitsToDouble(ptr.ToInt64());
+            return BitConverter.Int64BitsToDouble(Get(propertyName).ToInt64());
         }
 
-        public IntPtr Handle
+        /// <summary>
+        /// TODO not working
+        /// </summary>
+        /// <returns></returns>
+        public GParamSpec[] ListProperties()
         {
-            get { return _handle; }
+            uint count;
+            var ptr = g_object_class_list_properties(Handle, out count);
+            Debug.WriteLine(count);
+            
+            return null;
         }
     }
 }

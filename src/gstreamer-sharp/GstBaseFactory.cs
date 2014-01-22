@@ -11,6 +11,7 @@ namespace Gst
         AutoVideoSink,
         FileSource,
         PlayBin2,
-        PlayBin
+        PlayBin,
+        KsVideoSource
     }
 }

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Gst
+namespace Gst.Pipelines
 {
     /// <summary>
     /// Autoplug and play media from an uri
@@ -198,6 +195,8 @@ namespace Gst
             }
         }
 
+
+
         /// <summary>
         /// Set the next subtitle URI that playbin will play. This property can be set from the about-to-finish signal to queue the next subtitle media file.
         /// 
@@ -229,6 +228,161 @@ namespace Gst
             set
             {
                 Set("mute", value);
+            }
+        }
+
+        /// <summary>
+        /// Pango font description of font to be used for subtitle rendering.
+        /// 
+        /// Default value: null
+        /// </summary>
+        public string SubtitleFontDescription
+        {
+            set
+            {
+                Set("subtitle-font-desc", value);
+            }
+        }
+
+        /// <summary>
+        /// The video output element to use (null = default sink).
+        /// </summary>
+        public GstElement VideoSink
+        {
+            get
+            {
+                return GetStructure<GstElement>("video-sink");
+            }
+            set
+            {
+                Set("video-sink", value);
+            }
+        }
+
+        /// <summary>
+        /// The audio output element to use (null = default sink).
+        /// </summary>
+        public GstElement AudioSink
+        {
+            get
+            {
+                return GetStructure<GstElement>("audio-sink");
+            }
+            set
+            {
+                Set("audio-sink", value);
+            }
+        }
+
+        /// <summary>
+        /// The text output element to use (null = default textoverlay).
+        /// </summary>
+        public GstElement TextSink
+        {
+            get
+            {
+                return GetStructure<GstElement>("text-sink");
+            }
+            set
+            {
+                Set("text-sink", value);
+            }
+        }
+
+        /// <summary>
+        /// The subpicture output element to use (null = default dvdspu).
+        /// </summary>
+        public GstElement SubPictureSink
+        {
+            get
+            {
+                return GetStructure<GstElement>("subpic-sink");
+            }
+            set
+            {
+                Set("subpic-sink", value);
+            }
+        }
+
+        /// <summary>
+        /// The visualization element to use (null = default).
+        /// </summary>
+        public GstElement VisualizationPlugin
+        {
+            get
+            {
+                return GetStructure<GstElement>("vis-plugin");
+            }
+            set
+            {
+                Set("vis-plugin", value);
+            }
+        }
+
+        /// <summary>
+        /// Control the synchronisation offset between the audio and video streams. Positive values make the audio ahead of the video and negative values make the audio go behind the video.
+        /// 
+        /// Since 0.10.30
+        /// </summary>
+        public Int64 AvOffset
+        {
+            get { return GetInt64("av-offset"); }
+            set{ Set("av-offset", value);}
+        }
+
+        /// <summary>
+        /// Buffer size when buffering network streams.
+        /// 
+        /// Allowed values: >= -1
+        /// Default value: -1
+        /// </summary>
+        public Int32 BufferSize
+        {
+            get { return GetInt32("buffer-size"); }
+            set { Set("buffer-size", value); }
+        }
+
+        /// <summary>
+        /// Buffer duration when buffering network streams.
+        /// 
+        /// Allowed values: >= -1
+        /// Default value: -1
+        /// </summary>
+        public Int64 BufferDuration
+        {
+            get { return GetInt64("buffer-duration"); }
+            set { Set("buffer-duration", value); }
+        }
+
+        /// <summary>
+        /// Max. amount of data in the ring buffer (bytes, 0 = ring buffer disabled).
+        /// 
+        /// Allowed values: &lt;= max uint
+        /// Default value: 0
+        /// </summary>
+        public UInt64 RingBufferMaxSize
+        {
+            get { return GetUInt64("ring-buffer-max-size"); }
+            set { Set("ring-buffer-max-size", value); }
+        }
+
+        /// <summary>
+        /// Get the currently rendered or prerolled frame in the video sink. The GstCaps on the buffer will describe the format of the buffer.
+        /// </summary>
+        public GstBuffer Frame
+        {
+            get { return GetStructure<GstBuffer>("frame"); }
+            set{ Set("frame", value);}
+        }
+
+        /// <summary>
+        /// Source element.
+        /// </summary>
+        public GstElement Source
+        {
+            get
+            {
+                return GetStructure<GstElement>("source");
             }
         }
     }

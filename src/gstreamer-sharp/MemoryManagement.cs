@@ -18,5 +18,16 @@ namespace Gst
        {
            g_free(ptr);
        }
+
+       public static string GetManagedString(IntPtr ptr)
+       {
+           if (ptr == IntPtr.Zero)
+           {
+               return null;
+           }
+           var result = Utils.StringFromNativeUtf8(ptr);
+           Free(ptr);
+           return result;
+       }
    }
 }

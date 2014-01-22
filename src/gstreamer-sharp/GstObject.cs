@@ -15,6 +15,9 @@ namespace Gst
         [DllImport(Library.Libgstreamer, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool gst_object_set_name([In]IntPtr handle, [In]string name);
 
+        [DllImport(Library.Libgstreamer)]
+        private static extern IntPtr gst_object_get_path_string(IntPtr ptr);
+
         #endregion
 
         internal GstObject(IntPtr handle)
@@ -26,7 +29,10 @@ namespace Gst
         {
             get
             {
-                return Utils.StringFromNativeUtf8(gst_object_get_name(Handle));
+                var ptr = gst_object_get_name(Handle);
+                var result = Utils.StringFromNativeUtf8(ptr);
+                MemoryManagement.Free(ptr);
+                return result;
             }
             set
             {
@@ -35,6 +41,17 @@ namespace Gst
                 {
                     throw new Exception("Cannot set the name -> " + value);
                 }
+            }
+        }
+
+        public string Path
+        {
+            get
+            {
+                var ptr = gst_object_get_path_string(Handle);
+                var result = Utils.StringFromNativeUtf8(ptr);
+                MemoryManagement.Free(ptr);
+                return result;
             }
         }
     }

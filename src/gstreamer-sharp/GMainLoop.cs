@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Gst
 {
-    public class GMainLoop
+    public class GMainLoop : HandleObject
     {
-        private IntPtr _handle;
-
         #region wrappers
+
+        
 
         [DllImport(Library.Libglib)]
         private static extern IntPtr g_main_loop_new(IntPtr mainContext, bool running);
@@ -33,8 +33,8 @@ namespace Gst
 #endregion
 
         internal GMainLoop(IntPtr handle)
+            : base(handle)
         {
-            this._handle = handle;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Gst
         /// </summary>
         public void Run()
         {
-            g_main_loop_run(_handle);
+            g_main_loop_run(Handle);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Gst
         /// </summary>
         public void Quit()
         {
-            g_main_loop_quit(_handle);
+            g_main_loop_quit(Handle);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Gst
         /// </summary>
         public void UnRef()
         {
-            g_main_loop_unref(_handle);
+            g_main_loop_unref(Handle);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Gst
         /// </summary>
         public void Ref()
         {
-            g_main_loop_ref(_handle);
+            g_main_loop_ref(Handle);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Gst
         {
             get
             {
-                return g_main_loop_is_running(_handle);
+                return g_main_loop_is_running(Handle);
             }
         }
     }

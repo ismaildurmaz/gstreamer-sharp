@@ -6,9 +6,12 @@ using System.Text;
 
 namespace Gst
 {
-    public class GIOChannel
+    public class GIOChannel : HandleObject
     {
         #region wrappers
+
+        
+
         [DllImport(Library.Libglib)]
         private static extern IntPtr g_io_channel_win32_new_fd(IntPtr fd);
 
@@ -26,15 +29,9 @@ namespace Gst
         private const int StdErrorHandle = -12;
         #endregion
 
-        private IntPtr _handle;
-
-        internal GIOChannel(IntPtr handle)
+        public GIOChannel(IntPtr handle)
+            : base(handle)
         {
-            _handle = handle;
-            if (_handle == IntPtr.Zero)
-            {
-                throw new Exception("GIOChannel cannot be created");
-            }
         }
 
         public static GIOChannel CreateFromStandardInput()
@@ -49,7 +46,7 @@ namespace Gst
 
         public uint AddWatch(GIOCondition condition, Delegates.GIOFunction function, IntPtr userData)
         {
-            return g_io_add_watch(_handle, condition, function, userData);
+            return g_io_add_watch(Handle, condition, function, userData);
         }
 
         public GIOStatus ReadLine(out string line)
@@ -58,7 +55,7 @@ namespace Gst
             long length;
             GError error;
             long terminatorPos;
-            var result = g_io_channel_read_line(_handle, out ptr, out length, out terminatorPos, out error);
+            var result = g_io_channel_read_line(Handle, out ptr, out length, out terminatorPos, out error);
             line = Utils.StringFromNativeUtf8(ptr);
             MemoryManagement.Free(ptr);
             return result;

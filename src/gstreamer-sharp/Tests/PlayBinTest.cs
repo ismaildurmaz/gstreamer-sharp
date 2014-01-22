@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using Gst.Pipelines;
 using NUnit.Framework;
 
 namespace Gst.Tests
@@ -32,20 +33,13 @@ namespace Gst.Tests
             flags |= GstPlayFlags.Video | GstPlayFlags.Audio;
             flags &= ~GstPlayFlags.Text;
             p.Flags = flags;
-            /*var gio = GIOChannel.CreateFromStandardInput();
-            gio.AddWatch(GIOCondition.In, delegate(IntPtr source, GIOCondition condition, IntPtr data)
-            {
-                string line;
-                if (gio.ReadLine(out line) == GIOStatus.Success)
-                {
-                    Debug.WriteLine(line);
-                }
-            }, IntPtr.Zero);*/
             p.Play();
             Debug.WriteLine("video count : " + p.VideoStreamCount);
             Debug.WriteLine("audio count : " + p.AudioStreamCount);
             Debug.WriteLine("text count : " + p.TextStreamCount);
             Debug.WriteLine("volume : " + p.Volume);
+            Debug.WriteLine("source : " + p.Source.Name);
+            Debug.WriteLine("state : " + p.State);
             var mainLoop = GMainLoop.Create(false);
             mainLoop.Run();
         }

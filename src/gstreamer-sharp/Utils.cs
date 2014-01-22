@@ -18,6 +18,41 @@ namespace Gst
             return nativeUtf8;
         }
 
+        public static double ConvertMillisecondsToNanoseconds(double milliseconds)
+        {
+            // One million nanoseconds in one nanosecond.
+            return milliseconds * 1000000;
+        }
+        public static double ConvertMicrosecondsToNanoseconds(double microseconds)
+        {
+            // One thousand microseconds in one nanosecond.
+            return microseconds * 0.001;
+        }
+
+        public static double ConvertMillisecondsToMicroseconds(double milliseconds)
+        {
+            // One thousand milliseconds in one microsecond.
+            return milliseconds * 1000;
+        }
+
+        public static double ConvertNanosecondsToMilliseconds(double nanoseconds)
+        {
+            // One million nanoseconds in one millisecond.
+            return nanoseconds * 0.000001;
+        }
+
+        public static double ConvertMicrosecondsToMilliseconds(double microseconds)
+        {
+            // One thousand microseconds in one millisecond.
+            return microseconds * 1000;
+        }
+
+        public static double ConvertNanosecondsToMicroseconds(double nanoseconds)
+        {
+            // One thousand nanoseconds in one microsecond.
+            return nanoseconds * 1000;
+        }
+
         public static string StringFromNativeUtf8(IntPtr nativeUtf8)
         {
             int len = 0;
@@ -38,10 +73,13 @@ namespace Gst
                     return "autovideosink";
                 case GstBaseFactory.FileSource:
                     return "filesrc";
-                    case GstBaseFactory.PlayBin2:
+                case GstBaseFactory.PlayBin2:
                     return "playbin2";
-                    case GstBaseFactory.PlayBin:
+                case GstBaseFactory.PlayBin:
                     return "playbin";
+                case GstBaseFactory.KsVideoSource:
+                    return "ksvideosrc";
+
                 default:
                     throw new Exception("Not mapped value " + baseFactory);
             }
