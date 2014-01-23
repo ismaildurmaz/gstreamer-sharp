@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using Gst.Plugins;
 
 namespace Gst
 {
@@ -25,14 +26,28 @@ namespace Gst
         {
         }
 
+        internal GstObject(HandleObject handleObject)
+            : base(handleObject)
+        {
+        }
+
+        internal GstObject(GstPlugin plugin)
+            : base(plugin)
+        {
+
+        }
+
+        internal GstObject(GstPlugin plugin, string name)
+            : base(plugin, name)
+        {
+            
+        }
+
         public string Name
         {
             get
             {
-                var ptr = gst_object_get_name(Handle);
-                var result = Utils.StringFromNativeUtf8(ptr);
-                MemoryManagement.Free(ptr);
-                return result;
+                return MemoryManagement.GetManagedString(gst_object_get_name(Handle));
             }
             set
             {
@@ -48,10 +63,7 @@ namespace Gst
         {
             get
             {
-                var ptr = gst_object_get_path_string(Handle);
-                var result = Utils.StringFromNativeUtf8(ptr);
-                MemoryManagement.Free(ptr);
-                return result;
+                return MemoryManagement.GetManagedString(gst_object_get_path_string(Handle));
             }
         }
     }

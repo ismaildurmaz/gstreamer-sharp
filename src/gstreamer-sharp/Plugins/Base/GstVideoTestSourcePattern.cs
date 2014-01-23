@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Gst.Elements
+﻿namespace Gst.Plugins.Base
 {
     /// <summary>
     /// The test pattern to produce.

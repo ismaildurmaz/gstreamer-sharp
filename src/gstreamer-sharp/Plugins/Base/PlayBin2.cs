@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace Gst.Pipelines
+namespace Gst.Plugins.Base
 {
     /// <summary>
     /// Autoplug and play media from an uri
     /// </summary>
     public class PlayBin2 : GstPipeline
     {
-        public PlayBin2() : base(GstElementFactory.FactoryMake(GstBaseFactory.PlayBin2).Handle)
+        public PlayBin2() : base(GstPlugin.PlayBin2)
         {
             
         }

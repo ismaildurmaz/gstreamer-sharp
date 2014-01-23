@@ -6,10 +6,11 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using Gst.Plugins;
 
 namespace Gst
 {
-    public class GObject : HandleObject
+    public abstract class GObject : HandleObject
     {
         #region wrappers
 
@@ -31,6 +32,23 @@ namespace Gst
         internal GObject(GObject obj) : base(obj.Handle)
         {
 
+        }
+
+        internal GObject(HandleObject handleObject)
+            : base(handleObject.Handle)
+        {
+        }
+
+        internal GObject(GstPlugin plugin)
+            : base(GstElementFactory.FactoryMake(plugin).Handle)
+        {
+
+        }
+
+        internal GObject(GstPlugin plugin, string name)
+            : this(GstElementFactory.FactoryMake(plugin, name))
+        {
+            
         }
 
         public void Set(string propertyName, IntPtr value)
@@ -70,7 +88,7 @@ namespace Gst
 
         public void Set(string propertyName, Color value)
         {
-            Set(propertyName, value.ToArgb());
+            Set(propertyName, Utils.ColorToLong(value));
         }
 
         public void Set(string propertyName, double value)
@@ -152,7 +170,7 @@ namespace Gst
 
         public Color GetColor(string propertyName)
         {
-            return Color.FromArgb(Get(propertyName).ToInt32());
+            return Utils.ParseColor(Get(propertyName).ToInt64());
         }
 
         public TimeSpan GetTimeSpan(string propertyName)

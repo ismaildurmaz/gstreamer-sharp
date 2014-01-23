@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using Gst.Plugins;
 
 namespace Gst
 {
+    /// <summary>
+    /// Top-level bin with clocking and bus management functionality.
+    /// </summary>
     public class GstPipeline : GstBin
     {
 #region wrappers
@@ -44,21 +48,33 @@ namespace Gst
         {
         }
 
-        public static GstPipeline Create()
+         internal GstPipeline(HandleObject handleObject) : base(handleObject)
         {
-            return Create(Gst.GenerateName(typeof (GstPipeline)));
+            
         }
 
-        public static GstPipeline Create(string name)
+         internal GstPipeline(GstPlugin plugin)
+            : base(plugin)
         {
-            return new GstPipeline(gst_pipeline_new(name));
+
+        }
+
+        public GstPipeline() : base(GstPlugin.Pipeline)
+        {
+            
+        }
+
+        public GstPipeline(string name)
+            : base(GstPlugin.Pipeline, name)
+        {
+
         }
 
         public new GstClock Clock
         {
             get
             {
-                return new GstClock(gst_pipeline_get_clock(Handle));
+                return Utils.HandleObject<GstClock>(gst_pipeline_get_clock(Handle));
             }
             set
             {

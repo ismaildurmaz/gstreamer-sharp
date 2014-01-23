@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using Gst.Pipelines;
+using Gst.Plugins.Base;
 using NUnit.Framework;
 
 namespace Gst.Tests

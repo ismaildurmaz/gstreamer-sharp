@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using Gst.Plugins;
 
 namespace Gst
 {
@@ -53,6 +54,21 @@ namespace Gst
         [DllImport(Library.Libgstreamer)]
         private static extern IntPtr gst_element_iterate_sink_pads(IntPtr element);
 
+        [DllImport(Library.Libgstreamer)]
+        private static extern IntPtr gst_element_request_pad(IntPtr element, IntPtr template, string name, IntPtr caps);
+
+        [DllImport(Library.Libgstreamer)]
+        private static extern IntPtr gst_element_get_request_pad(IntPtr element, string name);
+
+        [DllImport(Library.Libgstreamer)]
+        private static extern void gst_element_release_request_pad(IntPtr element, IntPtr pad);
+
+        [DllImport(Library.Libgstreamer)]
+        private static extern bool gst_element_link_pads(IntPtr element, string srcPadName, IntPtr destination, string dstPadName );
+
+        [DllImport(Library.Libgstreamer)]
+        private static extern IntPtr gst_element_get_compatible_pad(IntPtr element, IntPtr gstPad, IntPtr gstCaps);
+
         #endregion
 
         internal GstElement(IntPtr handle)
@@ -60,12 +76,23 @@ namespace Gst
         {
         }
 
-        internal GstElement(GstElement element)
-            : base(element.Handle)
+        internal GstElement(HandleObject handleObject)
+            : base(handleObject)
         {
         }
 
-        
+        internal GstElement(GstPlugin plugin)
+            : base(plugin)
+        {
+
+        }
+
+        internal GstElement(GstPlugin plugin, string name)
+            : base(plugin, name)
+        {
+        }
+
+
         /// <summary>
         /// Link element with destinationElement
         /// </summary>
@@ -73,7 +100,7 @@ namespace Gst
         /// <returns></returns>
         public void Link(GstElement destinationElement)
         {
-            if (!gst_element_link(Handle, destinationElement.Handle))
+            if (!gst_element_link(Handle, Utils.GetHandle(destinationElement)))
             {
                 throw new Exception("Cannot link elements");
             }
@@ -136,7 +163,7 @@ namespace Gst
         {
             get
             {
-                return new GstBus(gst_element_get_bus(Handle));
+                return Utils.HandleObject<GstBus>(gst_element_get_bus(Handle));
             }
             set
             {
@@ -162,11 +189,11 @@ namespace Gst
         {
             get
             {
-                return new GstClock(gst_element_get_clock(Handle));
+                return Utils.HandleObject<GstClock>(gst_element_get_clock(Handle));
             }
             set
             {
-                if (!gst_element_set_clock(Handle, value.Handle))
+                if (!gst_element_set_clock(Handle, Utils.GetHandle(value)))
                 {
                     throw new Exception("Cannot set the clock");
                 }
@@ -194,7 +221,7 @@ namespace Gst
         {
             get
             {
-                return new GstClock(gst_element_provide_clock(Handle));
+                return Utils.HandleObject<GstClock>(gst_element_provide_clock(Handle));
             }
         }
 
@@ -204,7 +231,7 @@ namespace Gst
         /// <returns></returns>
         public GstIterator IteratePads()
         {
-            return new GstIterator(gst_element_iterate_pads(Handle));
+            return Utils.HandleObject<GstIterator>(gst_element_iterate_pads(Handle));
         }
 
         /// <summary>
@@ -213,7 +240,7 @@ namespace Gst
         /// <returns></returns>
         public GstIterator IterateSourcePads()
         {
-            return new GstIterator(gst_element_iterate_src_pads(Handle));
+            return Utils.HandleObject<GstIterator>(gst_element_iterate_src_pads(Handle));
         }
 
         /// <summary>
@@ -222,7 +249,80 @@ namespace Gst
         /// <returns></returns>
         public GstIterator IterateSinkPads()
         {
-            return new GstIterator(gst_element_iterate_sink_pads(Handle));
+            return Utils.HandleObject<GstIterator>(gst_element_iterate_sink_pads(Handle));
+        }
+
+        /// <summary>
+        /// Retrieves a request pad from the element according to the provided template. Pad templates can be looked up using get static pad templates
+        /// </summary>
+        /// <param name="padTemplate">A GstPadTemplate of which we want a pad of.</param>
+        /// <param name="name">The name of the request GstPad to retrieve. Can be null. </param>
+        /// <param name="caps">The caps of the pad we want to request. Can be null.</param>
+        /// <returns>Requested GstPad if found, otherwise null</returns>
+        public GstPad RequestPad(GstPadTemplate padTemplate, string name, GstCaps caps)
+        {
+            return Utils.HandleObject < GstPad>(gst_element_request_pad(Handle, Utils.GetHandle(padTemplate), name, Utils.GetHandle(caps)));
+        }
+
+        /// <summary>
+        /// Retrieves a pad from the element by name (e.g. "src_%d"). This version only retrieves request pads. The pad should be released with ReleaseRequestPad().
+        /// This method is slow and will be deprecated in the future. New code should use RequestPad() with the requested template.
+        /// </summary>
+        /// <param name="name">The name of the request GstPad to retrieve.</param>
+        /// <returns>Requested GstPad if found, otherwise null. Release after usage.</returns>
+        public GstPad GetRequestPad(string name)
+        {
+            return Utils.HandleObject<GstPad>(gst_element_get_request_pad(Handle, name));
+        }
+
+        /// <summary>
+        /// Makes the element free the previously requested pad as obtained with <b>RequestPad</b>.
+        /// </summary>
+        /// <param name="pad">The GstPad to release.</param>
+        public void ReleaseRequestPad(GstPad pad)
+        {
+            gst_element_release_request_pad(Handle, pad.Handle);
+        }
+
+        /// <summary>
+        /// Makes the elements free the previously requested pads as obtained with <b>RequestPad</b>.
+        /// </summary>
+        /// <param name="pad">The GstPad to release.</param>
+        public void ReleaseRequestPads(params GstPad[] pads)
+        {
+            foreach (var gstPad in pads)
+            {
+                ReleaseRequestPad(gstPad);
+            }
+        }
+
+        public void Link(string sourcePad, GstElement destination, string destinationPad)
+        {
+            if (!gst_element_link_pads(Handle, sourcePad, destination.Handle, destinationPad))
+            {
+                throw new Exception("Cannot link elements");
+            }
+        }
+
+        public void Link(string sourcePad, GstElement destination)
+        {
+            var srcPad = GetRequestPad(sourcePad);
+            var dstPad = destination.GetCompatiblePad(srcPad, null);
+            srcPad.Link(dstPad);
+            ReleaseRequestPad(srcPad);
+            destination.ReleaseRequestPad(dstPad);
+        }
+
+        /// <summary>
+        /// Looks for an unlinked pad to which the given pad can link. It is not guaranteed that linking the pads will work, though it should work in most cases.
+        /// This function will first attempt to find a compatible unlinked Always pad, and if none can be found, it will request a compatible Request pad by looking at the templates of element.
+        /// </summary>
+        /// <param name="gstPad">The GstPad to find a compatible one for.</param>
+        /// <param name="gstCaps">The GstCaps to use as a filter.</param>
+        /// <returns>The GstPad to which a link can be made, or null if one cannot be found. Unref after usage.</returns>
+        public GstPad GetCompatiblePad(GstPad gstPad, GstCaps gstCaps)
+        {
+            return Utils.HandleObject<GstPad>(gst_element_get_compatible_pad(Handle, Utils.GetHandle(gstPad), Utils.GetHandle(gstCaps)));
         }
     }
 }

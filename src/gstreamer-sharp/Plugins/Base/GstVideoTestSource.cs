@@ -1,17 +1,21 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Drawing;
 
-namespace Gst.Elements
+namespace Gst.Plugins.Base
 {
     /// <summary>
     /// The videotestsrc element is used to produce test video data in a wide variety of formats. The video test data produced can be controlled with the "pattern" property.
     /// </summary>
     public class GstVideoTestSource : GstPushSrc
     {
-        public GstVideoTestSource() : base(GstElementFactory.FactoryMake(GstBaseFactory.VideoTestSource).Handle)
+        public GstVideoTestSource() : base(GstPlugin.VideoTestSource)
         {
             
+        }
+
+        public GstVideoTestSource(GstVideoTestSourcePattern pattern): this()
+        {
+            Pattern = pattern;
         }
 
         /// <summary>
@@ -250,6 +254,14 @@ namespace Gst.Elements
         {
             get { return GetInt32("horizontal-speed"); }
             set { Set("horizontal-speed", value); }
+        }
+
+        /// <summary>
+        /// Get source pad
+        /// </summary>
+        public GstPad SourcePad
+        {
+            get { return GetRequestPad("src_%d"); }
         }
     }
 }

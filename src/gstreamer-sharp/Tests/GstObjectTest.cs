@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Gst.Plugins;
 using NUnit.Framework;
 
 namespace Gst.Tests
@@ -13,7 +14,7 @@ namespace Gst.Tests
         public void NameTest()
         {
             Gst.Init();
-            var k = GstElementFactory.FactoryMake(GstBaseFactory.AutoVideoSink);
+            var k = GstElementFactory.FactoryMake(GstPlugin.AutoVideoSink);
             k.Name = "test1";
             Assert.AreEqual(k.Name, "test1");
         }

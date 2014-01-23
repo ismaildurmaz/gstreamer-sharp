@@ -1,21 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using Gst.Plugins;
 
 namespace Gst
 {
     public static class Utils
     {
+        public static IntPtr GetHandle(HandleObject handleObject)
+        {
+            if (handleObject == null)
+            {
+                return IntPtr.Zero;
+            }
+            else
+            {
+                return handleObject.Handle;
+            }
+        }
         public static IntPtr NativeUtf8FromString(string managedString)
         {
+            if (managedString == null)
+            {
+                return IntPtr.Zero;
+            }
             int len = Encoding.UTF8.GetByteCount(managedString);
             byte[] buffer = new byte[len + 1];
             Encoding.UTF8.GetBytes(managedString, 0, managedString.Length, buffer, 0);
             IntPtr nativeUtf8 = Marshal.AllocHGlobal(buffer.Length);
             Marshal.Copy(buffer, 0, nativeUtf8, buffer.Length);
             return nativeUtf8;
+        }
+
+        public static Color ParseColor(long value)
+        {
+            var a = (byte) ((value) >> 24) & 0xff;
+            var r = (byte) ((value) >> 16) & 0xff;
+            var g = (byte) ((value) >> 8) & 0xff;
+            var b = (byte) ((value)) & 0xff;
+            return Color.FromArgb(a, r, g, b);
+
+        }
+
+        public static long ColorToLong(Color value)
+        {
+            return value.A << 24 | value.R << 16 | value.G << 8 | value.B;
         }
 
         public static double ConvertMillisecondsToNanoseconds(double milliseconds)
@@ -53,9 +86,26 @@ namespace Gst
             return nanoseconds * 1000;
         }
 
+
+        public static T HandleObject<T>(IntPtr ptr)
+        {
+            if (ptr == IntPtr.Zero)
+            {
+                return default(T);
+            }
+            var type = typeof (T);
+            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+
+            return (T) Activator.CreateInstance(type, flags, null, new object[] { ptr }, null);
+        }
+
         public static string StringFromNativeUtf8(IntPtr nativeUtf8)
         {
             int len = 0;
+            if (nativeUtf8 == IntPtr.Zero)
+            {
+                return null;
+            }
             while (Marshal.ReadByte(nativeUtf8, len) != 0) ++len;
             if (len == 0) return string.Empty;
             byte[] buffer = new byte[len];
@@ -63,25 +113,34 @@ namespace Gst
             return Encoding.UTF8.GetString(buffer);
         }
 
-        public static string GetName(GstBaseFactory baseFactory)
+        public static string GetName(GstPlugin plugin)
         {
-            switch (baseFactory)
+            switch (plugin)
             {
-                case GstBaseFactory.VideoTestSource:
+                case GstPlugin.AviMux:
+                    return "avimux";
+                case GstPlugin.VideoTestSource:
                     return "videotestsrc";
-                case GstBaseFactory.AutoVideoSink:
+                case GstPlugin.AutoVideoSink:
                     return "autovideosink";
-                case GstBaseFactory.FileSource:
+                case GstPlugin.FileSource:
                     return "filesrc";
-                case GstBaseFactory.PlayBin2:
+                case GstPlugin.PlayBin2:
                     return "playbin2";
-                case GstBaseFactory.PlayBin:
+                case GstPlugin.PlayBin:
                     return "playbin";
-                case GstBaseFactory.KsVideoSource:
+                case GstPlugin.KsVideoSource:
                     return "ksvideosrc";
-
+                case GstPlugin.Tee:
+                    return "tee";
+                case GstPlugin.Pipeline:
+                    return "pipeline";
+                case GstPlugin.FdSink:
+                    return "fdsink";
+                case GstPlugin.FileSink:
+                    return "filesink";
                 default:
-                    throw new Exception("Not mapped value " + baseFactory);
+                    throw new Exception("Not mapped plugin " + plugin);
             }
         }
     }

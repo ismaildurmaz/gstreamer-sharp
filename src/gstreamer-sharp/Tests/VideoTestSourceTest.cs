@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Gst.Elements;
+using Gst.Plugins.Base;
+using Gst.Plugins.Good;
 using NUnit.Framework;
 
 namespace Gst.Tests
@@ -14,7 +15,7 @@ namespace Gst.Tests
         [Test]
         public void Test1()
         {
-            var pipeline = GstPipeline.Create();
+            var pipeline = new GstPipeline();
             var src = new GstVideoTestSource();
             var sink = new GstAutoVideoSink();
             

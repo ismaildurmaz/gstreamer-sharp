@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using Gst.Plugins;
 
 namespace Gst
 {
@@ -27,14 +28,14 @@ namespace Gst
             return FactoryMake(factoryName, Gst.GenerateName(factoryName));
         }
 
-        public static GstElement FactoryMake(GstBaseFactory baseFactory)
+        public static GstElement FactoryMake(GstPlugin plugin)
         {
-            return FactoryMake(Utils.GetName(baseFactory));
+            return FactoryMake(Utils.GetName(plugin));
         }
 
-        public static GstElement FactoryMake(GstBaseFactory baseFactory, string name)
+        public static GstElement FactoryMake(GstPlugin plugin, string name)
         {
-            return FactoryMake(Utils.GetName(baseFactory), name);
+            return FactoryMake(Utils.GetName(plugin), name);
         }
     }
 }

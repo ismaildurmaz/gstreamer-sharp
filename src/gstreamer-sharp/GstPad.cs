@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Gst
@@ -10,6 +11,11 @@ namespace Gst
     /// </summary>
     public class GstPad : GstObject
     {
+        #region wrappers
+
+        [DllImport(Library.Libgstreamer)]
+        private static extern GstPadLinkReturn gst_pad_link(IntPtr sourcePad, IntPtr destinationPad);
+        #endregion
         internal GstPad(IntPtr handle) : base(handle)
         {
         }
@@ -54,6 +60,15 @@ namespace Gst
             set
             {
                 Set("template", value);
+            }
+        }
+
+        public void Link(GstPad destinationPad)
+        {
+            var result = gst_pad_link(Handle, destinationPad.Handle);
+            if (result != GstPadLinkReturn.Ok)
+            {
+                throw new Exception("Pads cannot linked -> " + result);
             }
         }
     }

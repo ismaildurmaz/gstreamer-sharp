@@ -47,10 +47,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Delegates.cs" />
-    <Compile Include="Elements\GstAutoVideoSink.cs" />
-    <Compile Include="Elements\GstVideoTestSourceColorSpec.cs" />
-    <Compile Include="Elements\GstVideoTestSourcePattern.cs" />
-    <Compile Include="Elements\KsVideoSource.cs" />
+    <Compile Include="Plugins\Base\GstBaseSink.cs" />
+    <Compile Include="Plugins\Core\GstFdSink.cs" />
+    <Compile Include="Plugins\Core\GstFileSink.cs" />
+    <Compile Include="Plugins\Core\GstFileSinkBufferMode.cs" />
+    <Compile Include="Plugins\Good\GstAutoVideoSink.cs" />
+    <Compile Include="Plugins\Core\GstTee.cs" />
+    <Compile Include="Plugins\Core\GstTeePullMode.cs" />
+    <Compile Include="Plugins\Base\GstVideoTestSourceColorSpec.cs" />
+    <Compile Include="Plugins\Base\GstVideoTestSourcePattern.cs" />
+    <Compile Include="Plugins\Good\GstAviMux.cs" />
+    <Compile Include="Plugins\KsVideoSource.cs" />
     <Compile Include="GError.cs" />
     <Compile Include="GInitiallyUnowned.cs" />
     <Compile Include="GIOChannel.cs" />
@@ -68,7 +75,7 @@
     <Compile Include="GstClock.cs" />
     <Compile Include="GstElement.cs" />
     <Compile Include="GstElementFactory.cs" />
-    <Compile Include="GstBaseFactory.cs" />
+    <Compile Include="Plugins\GstPlugin.cs" />
     <Compile Include="GstIterator.cs" />
     <Compile Include="GstIteratorResult.cs" />
     <Compile Include="GstMessage.cs" />
@@ -77,6 +84,7 @@
     <Compile Include="GstObject.cs" />
     <Compile Include="GstPad.cs" />
     <Compile Include="GstPadDirection.cs" />
+    <Compile Include="GstPadLinkReturn.cs" />
     <Compile Include="GstPadPresence.cs" />
     <Compile Include="GstPadTemplate.cs" />
     <Compile Include="GstPlayFlags.cs" />
@@ -92,16 +100,17 @@
     <Compile Include="Library.cs" />
     <Compile Include="GstPipeline.cs" />
     <Compile Include="MemoryManagement.cs" />
-    <Compile Include="Pipelines\PlayBin2.cs" />
+    <Compile Include="Plugins\Base\PlayBin2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\BaseTest.cs" />
+    <Compile Include="Tests\GstFileSinkTest.cs" />
     <Compile Include="Tests\GstObjectTest.cs" />
     <Compile Include="Tests\PlayBinTest.cs" />
     <Compile Include="Tests\GstTest.cs" />
     <Compile Include="Tests\VersionTest.cs" />
     <Compile Include="Tests\VideoTestSourceTest.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="Elements\GstVideoTestSource.cs" />
+    <Compile Include="Plugins\Base\GstVideoTestSource.cs" />
     <Compile Include="Win32.cs" />
   </ItemGroup>
   <ItemGroup>

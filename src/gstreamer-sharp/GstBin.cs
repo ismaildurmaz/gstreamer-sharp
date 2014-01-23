@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using Gst.Plugins;
 
 namespace Gst
 {
@@ -27,20 +28,41 @@ namespace Gst
         {
         }
 
+        internal GstBin(HandleObject handleObject) : base(handleObject)
+        {
+            
+        }
+
+        internal GstBin(GstPlugin plugin)
+            : base(plugin)
+        {
+
+        }
+
+        protected GstBin(GstPlugin plugin, string name)
+            : base(plugin, name)
+        {
+            
+        }
+
         /// <summary>
         /// Adds a list of elements to a bin. This function is equivalent to calling <b>AddElement</b> for each member of the list. The return value of each <b>AddElement</b> is ignored.
         /// </summary>
         /// <param name="elements"></param>
         public void AddElements(params GstElement[] elements)
         {
-            var lst = new IntPtr[elements.Length + 1];
+            /*var lst = new IntPtr[elements.Length + 1];
             int i = 0;
             for (i = 0; i < elements.Length; i++)
             {
                 lst[i] = elements[i].Handle;
             }
             lst[i] = IntPtr.Zero;
-            gst_bin_add_many(Handle, lst);
+            gst_bin_add_many(Handle, lst);*/
+            foreach (var gstElement in elements)
+            {
+                AddElement(gstElement);
+            }
         }
 
         /// <summary>
@@ -74,6 +96,7 @@ namespace Gst
         /// <param name="elements"></param>
         public void RemoveElements(params GstElement[] elements)
         {
+            /*
             var lst = new IntPtr[elements.Length + 1];
             int i = 0;
             for (i = 0; i < elements.Length; i++)
@@ -81,7 +104,11 @@ namespace Gst
                 lst[i] = elements[i].Handle;
             }
             lst[i] = IntPtr.Zero;
-            gst_bin_remove_many(Handle, lst);
+            gst_bin_remove_many(Handle, lst);*/
+            foreach (var gstElement in elements)
+            {
+                RemoveElement(gstElement);
+            }
         }
     }
 }
