@@ -1,7 +1,7 @@
 ﻿namespace Gst.Plugins
 {
     /// <summary>
-    /// Windows video capture source
+    ///     Windows video capture source
     /// </summary>
     public class KsVideoSource : GstElement
     {
@@ -11,12 +11,12 @@
         }
 
         /// <summary>
-        /// Get / set video capture device index.
+        ///     Get / set video capture device index.
         /// </summary>
         public int DeviceIndex
         {
             get { return GetInt32("device-index"); }
-            set { Set("device-index", value);}
+            set { Set("device-index", value); }
         }
     }
 }

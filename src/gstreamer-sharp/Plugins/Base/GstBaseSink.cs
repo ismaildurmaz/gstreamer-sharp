@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Gst.Plugins.Core
 {
     /// <summary>
-    /// Base class for sink elements.
+    ///     Base class for sink elements.
     /// </summary>
     public abstract class GstBaseSink : GstElement
     {

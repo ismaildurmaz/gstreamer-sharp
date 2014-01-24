@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -17,11 +15,9 @@ namespace Gst
             {
                 return IntPtr.Zero;
             }
-            else
-            {
-                return handleObject.Handle;
-            }
+            return handleObject.Handle;
         }
+
         public static IntPtr NativeUtf8FromString(string managedString)
         {
             if (managedString == null)
@@ -29,7 +25,7 @@ namespace Gst
                 return IntPtr.Zero;
             }
             int len = Encoding.UTF8.GetByteCount(managedString);
-            byte[] buffer = new byte[len + 1];
+            var buffer = new byte[len + 1];
             Encoding.UTF8.GetBytes(managedString, 0, managedString.Length, buffer, 0);
             IntPtr nativeUtf8 = Marshal.AllocHGlobal(buffer.Length);
             Marshal.Copy(buffer, 0, nativeUtf8, buffer.Length);
@@ -38,12 +34,11 @@ namespace Gst
 
         public static Color ParseColor(long value)
         {
-            var a = (byte) ((value) >> 24) & 0xff;
-            var r = (byte) ((value) >> 16) & 0xff;
-            var g = (byte) ((value) >> 8) & 0xff;
-            var b = (byte) ((value)) & 0xff;
+            int a = (byte) ((value) >> 24) & 0xff;
+            int r = (byte) ((value) >> 16) & 0xff;
+            int g = (byte) ((value) >> 8) & 0xff;
+            int b = (byte) ((value)) & 0xff;
             return Color.FromArgb(a, r, g, b);
-
         }
 
         public static long ColorToLong(Color value)
@@ -54,36 +49,37 @@ namespace Gst
         public static double ConvertMillisecondsToNanoseconds(double milliseconds)
         {
             // One million nanoseconds in one nanosecond.
-            return milliseconds * 1000000;
+            return milliseconds*1000000;
         }
+
         public static double ConvertMicrosecondsToNanoseconds(double microseconds)
         {
             // One thousand microseconds in one nanosecond.
-            return microseconds * 0.001;
+            return microseconds*0.001;
         }
 
         public static double ConvertMillisecondsToMicroseconds(double milliseconds)
         {
             // One thousand milliseconds in one microsecond.
-            return milliseconds * 1000;
+            return milliseconds*1000;
         }
 
         public static double ConvertNanosecondsToMilliseconds(double nanoseconds)
         {
             // One million nanoseconds in one millisecond.
-            return nanoseconds * 0.000001;
+            return nanoseconds*0.000001;
         }
 
         public static double ConvertMicrosecondsToMilliseconds(double microseconds)
         {
             // One thousand microseconds in one millisecond.
-            return microseconds * 1000;
+            return microseconds*1000;
         }
 
         public static double ConvertNanosecondsToMicroseconds(double nanoseconds)
         {
             // One thousand nanoseconds in one microsecond.
-            return nanoseconds * 1000;
+            return nanoseconds*1000;
         }
 
 
@@ -93,10 +89,21 @@ namespace Gst
             {
                 return default(T);
             }
-            var type = typeof (T);
+            Type type = typeof (T);
             BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
 
-            return (T) Activator.CreateInstance(type, flags, null, new object[] { ptr }, null);
+            return (T) Activator.CreateInstance(type, flags, null, new object[] {ptr}, null);
+        }
+
+        public static object HandleObject(IntPtr ptr, Type type)
+        {
+            if (ptr == IntPtr.Zero)
+            {
+                return null;
+            }
+            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+
+            return Activator.CreateInstance(type, flags, null, new object[] {ptr}, null);
         }
 
         public static string StringFromNativeUtf8(IntPtr nativeUtf8)
@@ -108,7 +115,7 @@ namespace Gst
             }
             while (Marshal.ReadByte(nativeUtf8, len) != 0) ++len;
             if (len == 0) return string.Empty;
-            byte[] buffer = new byte[len];
+            var buffer = new byte[len];
             Marshal.Copy(nativeUtf8, buffer, 0, buffer.Length);
             return Encoding.UTF8.GetString(buffer);
         }
@@ -139,6 +146,9 @@ namespace Gst
                     return "fdsink";
                 case GstPlugin.FileSink:
                     return "filesink";
+                case GstPlugin.UdpSink:
+                    return "udpsink";
+
                 default:
                     throw new Exception("Not mapped plugin " + plugin);
             }

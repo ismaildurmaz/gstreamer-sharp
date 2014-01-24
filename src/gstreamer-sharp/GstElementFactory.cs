@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using Gst.Plugins;
 
 namespace Gst
@@ -10,8 +7,10 @@ namespace Gst
     public class GstElementFactory : GstPluginFeature
     {
         #region wrappers
-        [DllImport(Library.Libgstreamer)]
+
+        [DllImport(Library.Libgstreamer, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr gst_element_factory_make(string factoryName, string name);
+
         #endregion
 
         internal GstElementFactory(IntPtr handle) : base(handle)
@@ -25,7 +24,7 @@ namespace Gst
 
         public static GstElement FactoryMake(string factoryName)
         {
-            return FactoryMake(factoryName, Gst.GenerateName(factoryName));
+            return FactoryMake(factoryName, Gstreamer.GenerateName(factoryName));
         }
 
         public static GstElement FactoryMake(GstPlugin plugin)

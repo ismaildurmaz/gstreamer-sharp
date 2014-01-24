@@ -1,7 +1,7 @@
 ﻿namespace Gst.Plugins.Base
 {
     /// <summary>
-    /// The color specification to use.
+    ///     The color specification to use.
     /// </summary>
     public enum GstVideoTestSourceColorSpec
     {

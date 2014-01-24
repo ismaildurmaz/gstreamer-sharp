@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Gst
 {
     public abstract class HandleObject
     {
-        private IntPtr _handle;
+        private readonly IntPtr _handle;
 
         internal HandleObject(IntPtr handle)
         {
-            this._handle = handle;
+            _handle = handle;
 
             if (handle == IntPtr.Zero)
             {

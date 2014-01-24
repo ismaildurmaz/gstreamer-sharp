@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Gst.Plugins;
 
 namespace Gst
@@ -12,15 +9,14 @@ namespace Gst
         {
         }
 
-         internal GstBaseSrc(HandleObject handleObject)
+        internal GstBaseSrc(HandleObject handleObject)
             : base(handleObject)
         {
         }
 
-         internal GstBaseSrc(GstPlugin plugin)
+        internal GstBaseSrc(GstPlugin plugin)
             : base(plugin)
         {
-
         }
     }
 }

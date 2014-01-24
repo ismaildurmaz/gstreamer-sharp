@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Gst
 {
@@ -10,11 +7,12 @@ namespace Gst
     {
         #region wrappers
 
-        [DllImport(Library.Libgobject)]
+        [DllImport(Library.Libgobject, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr g_strdup_value_contents(IntPtr handle);
 
-        [DllImport(Library.Libgobject)]
+        [DllImport(Library.Libgobject, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr g_type_name(int gType);
+
         #endregion
 
         internal GValue(IntPtr handle) : base(handle)
@@ -23,26 +21,17 @@ namespace Gst
 
         public string Contents
         {
-            get
-            {
-                return MemoryManagement.GetManagedString(g_strdup_value_contents(Handle));
-            }
+            get { return MemoryManagement.GetManagedString(g_strdup_value_contents(Handle)); }
         }
 
         public int Value
         {
-            get
-            {
-                return Handle.ToInt32();
-            }
+            get { return Handle.ToInt32(); }
         }
 
         public string TypeName
         {
-            get
-            {
-                return MemoryManagement.GetManagedString(g_type_name(Value));
-            }
+            get { return MemoryManagement.GetManagedString(g_type_name(Value)); }
         }
     }
 }

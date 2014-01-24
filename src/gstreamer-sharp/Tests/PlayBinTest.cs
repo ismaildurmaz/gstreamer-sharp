@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using Gst.Plugins.Base;
 using NUnit.Framework;
 
@@ -12,7 +8,6 @@ namespace Gst.Tests
     [TestFixture]
     public class PlayBinTest : BaseTest
     {
-
         [Test]
         public void Test1()
         {
@@ -27,9 +22,9 @@ namespace Gst.Tests
             Win32.SetConsoleActiveScreenBuffer(ptr);
         */
 
-        var p = new PlayBin2();
+            var p = new PlayBin2();
             p.Uri = new Uri("file://c/work/test.wmv");
-            var flags = p.Flags;
+            GstPlayFlags flags = p.Flags;
             flags |= GstPlayFlags.Video | GstPlayFlags.Audio;
             flags &= ~GstPlayFlags.Text;
             p.Flags = flags;
@@ -40,7 +35,7 @@ namespace Gst.Tests
             Debug.WriteLine("volume : " + p.Volume);
             Debug.WriteLine("source : " + p.Source.Name);
             Debug.WriteLine("state : " + p.State);
-            var mainLoop = GMainLoop.Create(false);
+            GMainLoop mainLoop = GMainLoop.Create(false);
             mainLoop.Run();
         }
     }

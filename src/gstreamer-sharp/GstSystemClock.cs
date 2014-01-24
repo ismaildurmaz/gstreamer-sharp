@@ -1,23 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Gst
 {
     /// <summary>
-    /// Default clock that uses the current system time
+    ///     Default clock that uses the current system time
     /// </summary>
     public class GstSystemClock : GstClock
     {
         #region wrappers
 
-        [DllImport(Library.Libgstreamer)]
+        [DllImport(Library.Libgstreamer, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr gst_system_clock_obtain();
+
         #endregion
 
         private static GstSystemClock _instance;
+
+        internal GstSystemClock(IntPtr handle) : base(handle)
+        {
+        }
 
         public static GstSystemClock Instance
         {
@@ -31,25 +33,14 @@ namespace Gst
             }
         }
 
-        internal GstSystemClock(IntPtr handle) : base(handle)
-        {
-        }
-
         /// <summary>
-        /// The type of underlying clock implementation used.
-        /// 
-        /// Default value: GST_CLOCK_TYPE_MONOTONIC
+        ///     The type of underlying clock implementation used.
+        ///     Default value: GST_CLOCK_TYPE_MONOTONIC
         /// </summary>
         public GstClockType ClockType
         {
-            get
-            {
-                return (GstClockType) GetInt32("clock-type");
-            }
-            set
-            {
-                Set("clock-type", (int)value);
-            }
+            get { return (GstClockType) GetInt32("clock-type"); }
+            set { Set("clock-type", (int) value); }
         }
     }
 }

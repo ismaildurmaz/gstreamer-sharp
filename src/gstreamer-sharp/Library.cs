@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Gst
+﻿namespace Gst
 {
     internal static class Library
     {
@@ -13,6 +8,14 @@ namespace Gst
         internal const string Libgobject = "libgobject-2.0-0.dll";
 
         internal const string Libglib = "libglib-2.0-0.dll";
+#endif
+
+#if GSTREAMER_1_0
+        internal const string Libgstreamer = @"libgstreamer-1.0-0.dll";
+
+        internal const string Libgobject = @"libgobject-2.0-0.dll";
+
+        internal const string Libglib = @"libglib-2.0-0.dll";
 #endif
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 
 namespace Gst.Tests
 {
@@ -10,7 +6,7 @@ namespace Gst.Tests
     {
         public BaseTest()
         {
-            Gst.Init();
+            Gstreamer.Init();
         }
 
         public void PrintLine(object line)

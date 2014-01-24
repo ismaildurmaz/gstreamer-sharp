@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Gst.Plugins;
 
 namespace Gst
@@ -20,7 +17,6 @@ namespace Gst
         internal GstPushSrc(GstPlugin plugin)
             : base(plugin)
         {
-
         }
     }
 }

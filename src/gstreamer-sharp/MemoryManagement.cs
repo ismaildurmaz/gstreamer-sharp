@@ -1,33 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Gst
 {
-   public static class MemoryManagement
-   {
-       #region wrappers
-       [DllImport(Library.Libglib)]
-       private static extern void g_free(IntPtr ptr);
+    public static class MemoryManagement
+    {
+        #region wrappers
 
-       #endregion
+        [DllImport(Library.Libglib, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void g_free(IntPtr ptr);
 
-       public static void Free(IntPtr ptr)
-       {
-           g_free(ptr);
-       }
+        #endregion
 
-       public static string GetManagedString(IntPtr ptr)
-       {
-           if (ptr == IntPtr.Zero)
-           {
-               return null;
-           }
-           var result = Utils.StringFromNativeUtf8(ptr);
-           Free(ptr);
-           return result;
-       }
-   }
+        public static void Free(IntPtr ptr)
+        {
+            g_free(ptr);
+        }
+
+        public static string GetManagedString(IntPtr ptr)
+        {
+            if (ptr == IntPtr.Zero)
+            {
+                return null;
+            }
+            string result = Utils.StringFromNativeUtf8(ptr);
+            Free(ptr);
+            return result;
+        }
+    }
 }

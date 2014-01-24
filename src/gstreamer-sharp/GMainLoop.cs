@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Gst
 {
@@ -10,27 +7,25 @@ namespace Gst
     {
         #region wrappers
 
-        
-
-        [DllImport(Library.Libglib)]
+        [DllImport(Library.Libglib, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr g_main_loop_new(IntPtr mainContext, bool running);
 
-        [DllImport(Library.Libglib)]
+        [DllImport(Library.Libglib, CallingConvention = CallingConvention.Cdecl)]
         private static extern void g_main_loop_run(IntPtr mainLoop);
 
-        [DllImport(Library.Libglib)]
+        [DllImport(Library.Libglib, CallingConvention = CallingConvention.Cdecl)]
         private static extern void g_main_loop_quit(IntPtr mainLoop);
 
-        [DllImport(Library.Libglib)]
+        [DllImport(Library.Libglib, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool g_main_loop_is_running(IntPtr mainLoop);
 
-        [DllImport(Library.Libglib)]
+        [DllImport(Library.Libglib, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool g_main_loop_unref(IntPtr mainLoop);
 
-        [DllImport(Library.Libglib)]
+        [DllImport(Library.Libglib, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool g_main_loop_ref(IntPtr mainLoop);
 
-#endregion
+        #endregion
 
         internal GMainLoop(IntPtr handle)
             : base(handle)
@@ -38,18 +33,30 @@ namespace Gst
         }
 
         /// <summary>
-        /// Creates a new GMainLoop structure.
+        ///     Checks to see if the main loop is currently being run via <b>Run</b>
         /// </summary>
-        /// <param name="running">set to true to indicate that the loop is running. This is not very important since calling g_main_loop_run() will set this to true anyway.</param>
+        public bool IsRunning
+        {
+            get { return g_main_loop_is_running(Handle); }
+        }
+
+        /// <summary>
+        ///     Creates a new GMainLoop structure.
+        /// </summary>
+        /// <param name="running">
+        ///     set to true to indicate that the loop is running. This is not very important since calling
+        ///     g_main_loop_run() will set this to true anyway.
+        /// </param>
         /// <returns></returns>
         public static GMainLoop Create(bool running)
         {
-            var r = g_main_loop_new(IntPtr.Zero, running);
+            IntPtr r = g_main_loop_new(IntPtr.Zero, running);
             return new GMainLoop(r);
         }
 
         /// <summary>
-        /// Runs a main loop until <b>Quit</b> is called on the loop. If this is called for the thread of the loop's GMainContext, it will process events from the loop, otherwise it will simply wait.
+        ///     Runs a main loop until <b>Quit</b> is called on the loop. If this is called for the thread of the loop's
+        ///     GMainContext, it will process events from the loop, otherwise it will simply wait.
         /// </summary>
         public void Run()
         {
@@ -57,8 +64,8 @@ namespace Gst
         }
 
         /// <summary>
-        /// Stops a GMainLoop from running. Any calls to <b>Run</b> for the loop will return.
-        /// Note that sources that have already been dispatched when <b>Quit</b> is called will still be executed.
+        ///     Stops a GMainLoop from running. Any calls to <b>Run</b> for the loop will return.
+        ///     Note that sources that have already been dispatched when <b>Quit</b> is called will still be executed.
         /// </summary>
         public void Quit()
         {
@@ -66,7 +73,8 @@ namespace Gst
         }
 
         /// <summary>
-        /// Decreases the reference count on a GMainLoop object by one. If the result is zero, free the loop and free all associated memory.
+        ///     Decreases the reference count on a GMainLoop object by one. If the result is zero, free the loop and free all
+        ///     associated memory.
         /// </summary>
         public void UnRef()
         {
@@ -74,22 +82,11 @@ namespace Gst
         }
 
         /// <summary>
-        /// Increases the reference count on a GMainLoop object by one.
+        ///     Increases the reference count on a GMainLoop object by one.
         /// </summary>
         public void Ref()
         {
             g_main_loop_ref(Handle);
-        }
-
-        /// <summary>
-        /// Checks to see if the main loop is currently being run via <b>Run</b>
-        /// </summary>
-        public bool IsRunning
-        {
-            get
-            {
-                return g_main_loop_is_running(Handle);
-            }
         }
     }
 }

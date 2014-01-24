@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Gst.Plugins.Good
+﻿namespace Gst.Plugins.Good
 {
     /// <summary>
-    /// Muxes raw or compressed audio and/or video streams into an AVI file.
+    ///     Muxes raw or compressed audio and/or video streams into an AVI file.
     /// </summary>
     public class GstAviMux : GstElement
     {
         public GstAviMux() : base(GstPlugin.AviMux)
         {
-            
         }
 
         /// <summary>
-        /// Get audio pad.
+        ///     Get audio pad.
         /// </summary>
         public GstPad AudioPad
         {
@@ -24,7 +18,7 @@ namespace Gst.Plugins.Good
         }
 
         /// <summary>
-        /// Get video pad.
+        ///     Get video pad.
         /// </summary>
         public GstPad VideoPad
         {
@@ -32,13 +26,13 @@ namespace Gst.Plugins.Good
         }
 
         /// <summary>
-        /// Support for openDML-2.0 (big) AVI files.
-        /// Default value: true
+        ///     Support for openDML-2.0 (big) AVI files.
+        ///     Default value: true
         /// </summary>
         public bool BigFile
         {
             get { return GetBool("bigfile"); }
-            set{ Set("bigfile", value);}
+            set { Set("bigfile", value); }
         }
     }
 }

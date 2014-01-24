@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Gst.Plugins;
+﻿using Gst.Plugins;
 using NUnit.Framework;
 
 namespace Gst.Tests
@@ -13,8 +9,8 @@ namespace Gst.Tests
         [Test]
         public void NameTest()
         {
-            Gst.Init();
-            var k = GstElementFactory.FactoryMake(GstPlugin.AutoVideoSink);
+            Gstreamer.Init();
+            GstElement k = GstElementFactory.FactoryMake(GstPlugin.AutoVideoSink);
             k.Name = "test1";
             Assert.AreEqual(k.Name, "test1");
         }

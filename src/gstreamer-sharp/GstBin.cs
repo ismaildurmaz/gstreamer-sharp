@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using Gst.Plugins;
 
 namespace Gst
@@ -10,16 +7,17 @@ namespace Gst
     public class GstBin : GstElement
     {
         #region wrappers
-        [DllImport(Library.Libgstreamer)]
+
+        [DllImport(Library.Libgstreamer, CallingConvention = CallingConvention.Cdecl)]
         private static extern void gst_bin_add_many(IntPtr bin, IntPtr[] elements);
 
-        [DllImport(Library.Libgstreamer)]
+        [DllImport(Library.Libgstreamer, CallingConvention = CallingConvention.Cdecl)]
         private static extern void gst_bin_remove_many(IntPtr bin, IntPtr[] elements);
 
-        [DllImport(Library.Libgstreamer)]
+        [DllImport(Library.Libgstreamer, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool gst_bin_add(IntPtr bin, IntPtr element);
 
-        [DllImport(Library.Libgstreamer)]
+        [DllImport(Library.Libgstreamer, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool gst_bin_remove(IntPtr bin, IntPtr element);
 
         #endregion
@@ -30,23 +28,21 @@ namespace Gst
 
         internal GstBin(HandleObject handleObject) : base(handleObject)
         {
-            
         }
 
         internal GstBin(GstPlugin plugin)
             : base(plugin)
         {
-
         }
 
         protected GstBin(GstPlugin plugin, string name)
             : base(plugin, name)
         {
-            
         }
 
         /// <summary>
-        /// Adds a list of elements to a bin. This function is equivalent to calling <b>AddElement</b> for each member of the list. The return value of each <b>AddElement</b> is ignored.
+        ///     Adds a list of elements to a bin. This function is equivalent to calling <b>AddElement</b> for each member of the
+        ///     list. The return value of each <b>AddElement</b> is ignored.
         /// </summary>
         /// <param name="elements"></param>
         public void AddElements(params GstElement[] elements)
@@ -59,15 +55,16 @@ namespace Gst
             }
             lst[i] = IntPtr.Zero;
             gst_bin_add_many(Handle, lst);*/
-            foreach (var gstElement in elements)
+            foreach (GstElement gstElement in elements)
             {
                 AddElement(gstElement);
             }
         }
 
         /// <summary>
-        /// Adds the given element to the bin. Sets the element's parent, and thus takes ownership of the element. An element can only be added to one bin.
-        /// If the element's pads are linked to other pads, the pads will be unlinked before the element is added to the bin.
+        ///     Adds the given element to the bin. Sets the element's parent, and thus takes ownership of the element. An element
+        ///     can only be added to one bin.
+        ///     If the element's pads are linked to other pads, the pads will be unlinked before the element is added to the bin.
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
@@ -77,11 +74,12 @@ namespace Gst
         }
 
         /// <summary>
-        /// Removes the element from the bin, unparenting it as well. 
-        /// Unparenting the element means that the element will be dereferenced, 
-        /// so if the bin holds the only reference to the element, 
-        /// the element will be freed in the process of removing it from the bin. 
-        /// If you want the element to still exist after removing, you need to call <b>Ref()</b> before removing it from the bin.
+        ///     Removes the element from the bin, unparenting it as well.
+        ///     Unparenting the element means that the element will be dereferenced,
+        ///     so if the bin holds the only reference to the element,
+        ///     the element will be freed in the process of removing it from the bin.
+        ///     If you want the element to still exist after removing, you need to call <b>Ref()</b> before removing it from the
+        ///     bin.
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
@@ -91,7 +89,8 @@ namespace Gst
         }
 
         /// <summary>
-        /// Remove a list of elements from a bin. This function is equivalent to calling <b>RemoveElement</b> with each member of the list.
+        ///     Remove a list of elements from a bin. This function is equivalent to calling <b>RemoveElement</b> with each member
+        ///     of the list.
         /// </summary>
         /// <param name="elements"></param>
         public void RemoveElements(params GstElement[] elements)
@@ -105,7 +104,7 @@ namespace Gst
             }
             lst[i] = IntPtr.Zero;
             gst_bin_remove_many(Handle, lst);*/
-            foreach (var gstElement in elements)
+            foreach (GstElement gstElement in elements)
             {
                 RemoveElement(gstElement);
             }

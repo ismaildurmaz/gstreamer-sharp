@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using Gst.Plugins;
 
 namespace Gst
 {
-    public abstract class GObject : HandleObject
+    public abstract class GObject : HandleObject, IDisposable
     {
         #region wrappers
 
@@ -20,18 +17,36 @@ namespace Gst
         [DllImport(Library.Libgobject, CallingConvention = CallingConvention.Cdecl)]
         private static extern void g_object_get(IntPtr obj, string propertName, out IntPtr value1, object value2);
 
-        [DllImport(Library.Libgobject)]
+        [DllImport(Library.Libgobject, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr g_object_class_list_properties(IntPtr obj, out uint count);
+
+        [DllImport(Library.Libgobject, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void g_object_run_dispose(IntPtr obj);
+
+        #endregion
+
+        #region structures
+        [StructLayout(LayoutKind.Sequential)]
+        private struct GObjectStruct
+        {
+            public GTypeInstance TypeInstance;
+            public volatile int RefCount;
+            public volatile IntPtr QData;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct GTypeInstance
+        {
+            public volatile IntPtr GClass;
+        }
         #endregion
 
         internal GObject(IntPtr handle) : base(handle)
         {
-            
         }
 
         internal GObject(GObject obj) : base(obj.Handle)
         {
-
         }
 
         internal GObject(HandleObject handleObject)
@@ -42,13 +57,33 @@ namespace Gst
         internal GObject(GstPlugin plugin)
             : base(GstElementFactory.FactoryMake(plugin).Handle)
         {
-
         }
 
         internal GObject(GstPlugin plugin, string name)
             : this(GstElementFactory.FactoryMake(plugin, name))
         {
-            
+        }
+
+        public GType Type
+        {
+            get
+            {
+                return (GType) GetStruct().TypeInstance.GClass.ToInt64();
+            }
+        }
+
+        /// <summary>
+        ///     Dispose the object
+        /// </summary>
+        public void Dispose()
+        {
+            g_object_run_dispose(Handle);
+        }
+
+
+        private GObjectStruct GetStruct()
+        {
+            return (GObjectStruct) Marshal.PtrToStructure(Handle, typeof (GObjectStruct));
         }
 
         public void Set(string propertyName, IntPtr value)
@@ -131,7 +166,7 @@ namespace Gst
 
         public object GetStructure(string propertyName, Type type)
         {
-            var ptr = Get(propertyName);
+            IntPtr ptr = Get(propertyName);
             if (ptr == IntPtr.Zero)
             {
                 return null;
@@ -140,12 +175,9 @@ namespace Gst
             {
                 BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
 
-                return Activator.CreateInstance(type, flags, null, new object[] { ptr }, null);
+                return Activator.CreateInstance(type, flags, null, new object[] {ptr}, null);
             }
-            else
-            {
-                return Marshal.PtrToStructure(ptr, type);
-            }
+            return Marshal.PtrToStructure(ptr, type);
         }
 
         public T GetStructure<T>(string propertyName)
@@ -203,17 +235,20 @@ namespace Gst
             return BitConverter.Int64BitsToDouble(Get(propertyName).ToInt64());
         }
 
+
         /// <summary>
-        /// TODO not working
+        ///     TODO not working
         /// </summary>
         /// <returns></returns>
         public GParamSpec[] ListProperties()
         {
             uint count;
-            var ptr = g_object_class_list_properties(Handle, out count);
+            IntPtr ptr = g_object_class_list_properties(Handle, out count);
             Debug.WriteLine(count);
-            
+
             return null;
         }
+
+        
     }
 }

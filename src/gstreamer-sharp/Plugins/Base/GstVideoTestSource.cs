@@ -4,108 +4,84 @@ using System.Drawing;
 namespace Gst.Plugins.Base
 {
     /// <summary>
-    /// The videotestsrc element is used to produce test video data in a wide variety of formats. The video test data produced can be controlled with the "pattern" property.
+    ///     The videotestsrc element is used to produce test video data in a wide variety of formats. The video test data
+    ///     produced can be controlled with the "pattern" property.
     /// </summary>
     public class GstVideoTestSource : GstPushSrc
     {
         public GstVideoTestSource() : base(GstPlugin.VideoTestSource)
         {
-            
         }
 
-        public GstVideoTestSource(GstVideoTestSourcePattern pattern): this()
+        public GstVideoTestSource(GstVideoTestSourcePattern pattern) : this()
         {
             Pattern = pattern;
         }
 
         /// <summary>
-        /// Type of test pattern to generate.
-        /// 
-        /// Default value: SMPTE 100% color bars
+        ///     Type of test pattern to generate.
+        ///     Default value: SMPTE 100% color bars
         /// </summary>
         public GstVideoTestSourcePattern Pattern
         {
             get { return (GstVideoTestSourcePattern) GetInt32("pattern"); }
-            set
-            {
-                Set("pattern", (int) value);
-            }
+            set { Set("pattern", (int) value); }
         }
 
         /// <summary>
-        /// An offset added to timestamps set on buffers (in ns).
-        /// 
-        /// Default value: 0
+        ///     An offset added to timestamps set on buffers (in ns).
+        ///     Default value: 0
         /// </summary>
         public Int64 TimestampOffset
         {
-            get
-            {
-                return GetInt64("timestamp-offset");
-            }
-            set
-            {
-                Set("timestamp-offset", value);
-            }
+            get { return GetInt64("timestamp-offset"); }
+            set { Set("timestamp-offset", value); }
         }
 
         /// <summary>
-        /// Whether to act as a live source.
-        /// 
-        /// Default value: false
+        ///     Whether to act as a live source.
+        ///     Default value: false
         /// </summary>
         public bool IsAlive
         {
             get { return GetBool("is-live"); }
-            set
-            {
-                Set("is-live", value);
-            }
+            set { Set("is-live", value); }
         }
 
         /// <summary>
-        /// Ask the peer to allocate an output buffer.
-        /// 
-        /// Default value: true
+        ///     Ask the peer to allocate an output buffer.
+        ///     Default value: true
         /// </summary>
         public bool PeerAlloc
         {
-            get
-            {
-                return GetBool("peer-alloc");
-            }
-            set
-            {
-                Set("peer-alloc", value);
-            }
+            get { return GetBool("peer-alloc"); }
+            set { Set("peer-alloc", value); }
         }
 
         /// <summary>
-        /// Generate video in the given color specification (Deprecated: use a caps filter with video/x-raw-yuv,color-matrix="sdtv" or "hdtv" instead).
-        /// 
-        /// Default value: ITU-R Rec. BT.601
+        ///     Generate video in the given color specification (Deprecated: use a caps filter with
+        ///     video/x-raw-yuv,color-matrix="sdtv" or "hdtv" instead).
+        ///     Default value: ITU-R Rec. BT.601
         /// </summary>
         public GstVideoTestSourceColorSpec ColorSpec
         {
             get { return (GstVideoTestSourceColorSpec) GetInt32("colorspec"); }
-            set{ Set("colorspec", (int)value);}
+            set { Set("colorspec", (int) value); }
         }
 
         /// <summary>
-        /// Zoneplate zero order phase, for generating plain fields or phase offsets.
-        /// 
-        /// Default value: 0
+        ///     Zoneplate zero order phase, for generating plain fields or phase offsets.
+        ///     Default value: 0
         /// </summary>
         public int K0
         {
             get { return GetInt32("k0"); }
-            set{ Set("k0", value);}
+            set { Set("k0", value); }
         }
 
         /// <summary>
-        /// Zoneplate 1st order t phase, for generating phase rotation as a function of time.
-        /// 
-        /// Default value: 0
+        ///     Zoneplate 1st order t phase, for generating phase rotation as a function of time.
+        ///     Default value: 0
         /// </summary>
         public int Kt
         {
@@ -114,9 +90,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Zoneplate 2nd order t phase, t*t/256 cycles per picture.
-        /// 
-        /// Default value: 0
+        ///     Zoneplate 2nd order t phase, t*t/256 cycles per picture.
+        ///     Default value: 0
         /// </summary>
         public int Kt2
         {
@@ -125,9 +100,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Zoneplate 1st order x phase, for generating constant horizontal frequencies.
-        /// 
-        /// Default value: 0
+        ///     Zoneplate 1st order x phase, for generating constant horizontal frequencies.
+        ///     Default value: 0
         /// </summary>
         public int Kx
         {
@@ -136,9 +110,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Zoneplate 2nd order x phase, normalised to kx2/256 cycles per horizontal pixel at width/2 from origin.
-        /// 
-        /// Default value: 0
+        ///     Zoneplate 2nd order x phase, normalised to kx2/256 cycles per horizontal pixel at width/2 from origin.
+        ///     Default value: 0
         /// </summary>
         public int Kx2
         {
@@ -147,9 +120,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Zoneplate x*t product phase, normalised to kxy/256 cycles per vertical pixel at width/2 from origin.
-        /// 
-        /// Default value: 0
+        ///     Zoneplate x*t product phase, normalised to kxy/256 cycles per vertical pixel at width/2 from origin.
+        ///     Default value: 0
         /// </summary>
         public int Kxt
         {
@@ -158,9 +130,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Zoneplate x*y product phase.
-        /// 
-        /// Default value: 0
+        ///     Zoneplate x*y product phase.
+        ///     Default value: 0
         /// </summary>
         public int Kxy
         {
@@ -169,9 +140,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Zoneplate 1st order y phase, for generating contant vertical frequencies.
-        /// 
-        /// Default value: 0
+        ///     Zoneplate 1st order y phase, for generating contant vertical frequencies.
+        ///     Default value: 0
         /// </summary>
         public int Ky
         {
@@ -180,9 +150,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Zoneplate 2nd order y phase, normailsed to ky2/256 cycles per vertical pixel at height/2 from origin.
-        /// 
-        /// Default value: 0
+        ///     Zoneplate 2nd order y phase, normailsed to ky2/256 cycles per vertical pixel at height/2 from origin.
+        ///     Default value: 0
         /// </summary>
         public int Ky2
         {
@@ -191,9 +160,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Zoneplate y*t product phase.
-        /// 
-        /// Default value: 0
+        ///     Zoneplate y*t product phase.
+        ///     Default value: 0
         /// </summary>
         public int Kyt
         {
@@ -202,9 +170,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Zoneplate 2nd order products x offset.
-        /// 
-        /// Default value: 0
+        ///     Zoneplate 2nd order products x offset.
+        ///     Default value: 0
         /// </summary>
         public int XOffset
         {
@@ -213,9 +180,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Zoneplate 2nd order products y offset.
-        /// 
-        /// Default value: 0
+        ///     Zoneplate 2nd order products y offset.
+        ///     Default value: 0
         /// </summary>
         public int YOffset
         {
@@ -224,9 +190,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Color to use for background color of some patterns. Default is black (0xff000000).
-        /// 
-        /// Default value: 4278190080
+        ///     Color to use for background color of some patterns. Default is black (0xff000000).
+        ///     Default value: 4278190080
         /// </summary>
         public Color BackgroundColor
         {
@@ -235,9 +200,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Color to use for solid-color pattern and foreground color of other patterns. Default is white (0xffffffff).
-        /// 
-        /// Default value: 4294967295
+        ///     Color to use for solid-color pattern and foreground color of other patterns. Default is white (0xffffffff).
+        ///     Default value: 4294967295
         /// </summary>
         public Color ForegroundColor
         {
@@ -246,9 +210,8 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Scroll image number of pixels per frame (positive is scroll to the left).
-        /// 
-        /// Default value: 0
+        ///     Scroll image number of pixels per frame (positive is scroll to the left).
+        ///     Default value: 0
         /// </summary>
         public int HorizontalSpeed
         {
@@ -257,7 +220,7 @@ namespace Gst.Plugins.Base
         }
 
         /// <summary>
-        /// Get source pad
+        ///     Get source pad
         /// </summary>
         public GstPad SourcePad
         {

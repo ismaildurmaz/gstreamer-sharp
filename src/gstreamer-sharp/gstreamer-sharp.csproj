@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gst</RootNamespace>
     <AssemblyName>Gstreamer_CSharp</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,9 +31,30 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;GSTREAMER_1_0</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework">
@@ -47,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Delegates.cs" />
+    <Compile Include="GType.cs" />
     <Compile Include="Plugins\Base\GstBaseSink.cs" />
     <Compile Include="Plugins\Core\GstFdSink.cs" />
     <Compile Include="Plugins\Core\GstFileSink.cs" />
@@ -57,6 +81,8 @@
     <Compile Include="Plugins\Base\GstVideoTestSourceColorSpec.cs" />
     <Compile Include="Plugins\Base\GstVideoTestSourcePattern.cs" />
     <Compile Include="Plugins\Good\GstAviMux.cs" />
+    <Compile Include="Plugins\Good\GstMultiUDPSink.cs" />
+    <Compile Include="Plugins\Good\GstUDPSink.cs" />
     <Compile Include="Plugins\KsVideoSource.cs" />
     <Compile Include="GError.cs" />
     <Compile Include="GInitiallyUnowned.cs" />
@@ -70,7 +96,7 @@
     <Compile Include="GstBin.cs" />
     <Compile Include="GstBuffer.cs" />
     <Compile Include="GstBus.cs" />
-    <Compile Include="Gst.cs" />
+    <Compile Include="Gstreamer.cs" />
     <Compile Include="GstCaps.cs" />
     <Compile Include="GstClock.cs" />
     <Compile Include="GstElement.cs" />
@@ -94,7 +120,6 @@
     <Compile Include="GstStateChangeReturn.cs" />
     <Compile Include="GstSystemClock.cs" />
     <Compile Include="GstVersion.cs" />
-    <Compile Include="GType.cs" />
     <Compile Include="GValue.cs" />
     <Compile Include="HandleObject.cs" />
     <Compile Include="Library.cs" />
@@ -107,6 +132,7 @@
     <Compile Include="Tests\GstObjectTest.cs" />
     <Compile Include="Tests\PlayBinTest.cs" />
     <Compile Include="Tests\GstTest.cs" />
+    <Compile Include="Tests\UdpSinkTest.cs" />
     <Compile Include="Tests\VersionTest.cs" />
     <Compile Include="Tests\VideoTestSourceTest.cs" />
     <Compile Include="Utils.cs" />

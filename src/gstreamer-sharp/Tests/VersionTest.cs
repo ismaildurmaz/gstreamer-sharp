@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 using NUnit.Framework;
 
 namespace Gst.Tests
 {
     [TestFixture]
-    class VersionTest
+    internal class VersionTest
     {
         [Test]
         public void GetVersion()
         {
-            Debug.WriteLine(Gst.Version);    
+            Debug.WriteLine(Gstreamer.Version);
         }
     }
 }
