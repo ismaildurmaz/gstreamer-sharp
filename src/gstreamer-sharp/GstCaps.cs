@@ -16,6 +16,8 @@ namespace Gst
         [DllImport(Library.Libgstreamer, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr gst_caps_to_string(IntPtr caps);
 
+        [DllImport(Library.Libgstreamer, CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr gst_caps_new_empty();
         #endregion
 
         internal GstCaps(IntPtr handle) : base(handle)
@@ -26,6 +28,26 @@ namespace Gst
             : base(gst_caps_from_string(caps))
         {
             
+        }
+
+        public GstCaps() : base(gst_caps_new_empty())
+        {
+            
+        }
+
+
+
+        public static GstCaps FromVideoXRawRGB(int width, int height, int framerate)
+        {
+            var str = string.Format("video/x-raw-rgb,width={0},height={1},framerate={2}/1", width, height,
+                framerate);
+            return new GstCaps(str);
+        }
+
+        public static GstCaps FromVideoXRawRGB(int width, int height)
+        {
+            var str = string.Format("video/x-raw-rgb,width={0},height={1}", width, height);
+            return new GstCaps(str);
         }
 
         public static GstCaps FromVideoXRaw(VideoXRawFormat format, int width, int height, int framerate)

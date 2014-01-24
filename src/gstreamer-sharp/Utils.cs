@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -9,6 +10,28 @@ namespace Gst
 {
     public static class Utils
     {
+        public static string ExecuteGstInspect()
+        {
+            var proc = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "gst-inspect-1.0.exe",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                }
+            };
+            proc.Start();
+            var stringBuilder = new StringBuilder();
+            while (!proc.StandardOutput.EndOfStream)
+            {
+                string line = proc.StandardOutput.ReadLine();
+                stringBuilder.AppendLine(line);
+            }
+            return stringBuilder.ToString();
+        }
+
         public static IntPtr GetHandle(HandleObject handleObject)
         {
             if (handleObject == null)
