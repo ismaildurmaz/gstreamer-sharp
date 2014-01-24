@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;GSTREAMER_0_10</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;GSTREAMER_1_0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -71,6 +71,8 @@
   <ItemGroup>
     <Compile Include="Delegates.cs" />
     <Compile Include="GType.cs" />
+    <Compile Include="Plugins\AudioChannel.cs" />
+    <Compile Include="Plugins\AudioXRawFormat.cs" />
     <Compile Include="Plugins\Base\GstBaseSink.cs" />
     <Compile Include="Plugins\Core\GstFdSink.cs" />
     <Compile Include="Plugins\Core\GstFileSink.cs" />
@@ -126,6 +128,7 @@
     <Compile Include="GstPipeline.cs" />
     <Compile Include="MemoryManagement.cs" />
     <Compile Include="Plugins\Base\PlayBin2.cs" />
+    <Compile Include="Plugins\VideoXRawFormat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\BaseTest.cs" />
     <Compile Include="Tests\GstFileSinkTest.cs" />

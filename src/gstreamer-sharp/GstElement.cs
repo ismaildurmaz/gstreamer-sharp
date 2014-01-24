@@ -63,6 +63,9 @@ namespace Gst
         [DllImport(Library.Libgstreamer, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr gst_element_get_compatible_pad(IntPtr element, IntPtr gstPad, IntPtr gstCaps);
 
+        [DllImport(Library.Libgstreamer, CallingConvention = CallingConvention.Cdecl)]
+        private static extern  bool gst_element_link_filtered(IntPtr src, IntPtr dst, IntPtr gstCaps);
+
         #endregion
 
         internal GstElement(IntPtr handle)
@@ -156,6 +159,17 @@ namespace Gst
             {
                 throw new Exception("Cannot link elements");
             }
+        }
+
+        /// <summary>
+        /// Links source to destination using the given caps as filtercaps. The link must be from source to destination; the other direction will not be tried. The function looks for existing pads that aren't linked yet. It will request new pads if necessary. If multiple links are possible, only one is established.
+        /// </summary>
+        /// <param name="destination">The GstElement containing the destination pad.</param>
+        /// <param name="caps">The GstCaps to filter the link, or null for no filter.</param>
+        /// <returns>true if the pads could be linked, false otherwise.</returns>
+        public bool LinkFiltered(GstElement destination, GstCaps caps)
+        {
+            return gst_element_link_filtered(Handle, Utils.GetHandle(destination), Utils.GetHandle(caps));
         }
 
         /// <summary>
@@ -267,10 +281,10 @@ namespace Gst
             }
         }
 
-        public void Link(string sourcePad, GstElement destination)
+        public void Link(string sourcePad, GstElement destination, GstCaps destinationCaps)
         {
             GstPad srcPad = GetRequestPad(sourcePad);
-            GstPad dstPad = destination.GetCompatiblePad(srcPad, null);
+            GstPad dstPad = destination.GetCompatiblePad(srcPad, destinationCaps);
             srcPad.Link(dstPad);
             ReleaseRequestPad(srcPad);
             destination.ReleaseRequestPad(dstPad);
